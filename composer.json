@@ -47,12 +47,9 @@
     },
     "scripts": {
         "test": "phpunit tests",
-        "analyze": "phpstan analyse src",
-        "lint": "phpcs src --standard=PSR12",
-        "fix": "phpcbf src --standard=PSR12"
+        "analyze": "phpstan analyse src"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {}
+        "sort-packages": true
     }
 }
