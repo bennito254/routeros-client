@@ -17,7 +17,7 @@ use Bennito254\RouterOS\Query\Query;
 // ============================================================================
 
 // Adjust these to match your RouterOS instance
-$host = getenv('ROUTEROS_HOST') ?: '192.168.88.1';
+$host = getenv('ROUTEROS_HOST') ?: '10.8.0.2';
 $user = getenv('ROUTEROS_USER') ?: 'admin';
 $pass = getenv('ROUTEROS_PASS') ?: 'password';
 $port = (int)(getenv('ROUTEROS_PORT') ?: 8728);
@@ -31,13 +31,13 @@ $config = new ClientConfig(
     port: $port,
     timeout: 10,
     // Uncomment to use a proxy:
-    // proxy: new ProxyConfig(
-    //     type: ProxyConfig::TYPE_SOCKS5,
-    //     host: '127.0.0.1',
-    //     port: 1080,
-    //     username: 'proxy-user',
-    //     password: 'proxy-pass',
-    // ),
+    //  proxy: new ProxyConfig(
+    //      type: ProxyConfig::TYPE_SOCKS5,
+    //      host: '127.0.0.1',
+    //      port: 1080,
+    //      username: 'proxy_user',
+    //      password: 'proxy_pass',
+    //  ),
     // Uncomment to use SSL/TLS (make sure port is 8729):
     // ssl: new SslConfig(
     //     enabled: true,

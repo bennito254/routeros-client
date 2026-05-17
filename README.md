@@ -10,6 +10,8 @@ A modern, production-grade PHP client for communicating with the MikroTik Router
 - **TLS/SSL encryption**: Support for API-SSL with options to configure certificates and peer verification.
 - **Query Builder**: Fluent `Query` builder for crafting RouterOS commands and filters easily.
 - **Collections**: Responses are encapsulated in `ResponseCollection` containing `ResponseSentence` objects.
+- **Service Facades**: Ready-to-use Facade classes to manage IP addresses, Hotspot clients, and PPP accounts fluently.
+- **Laravel Integration**: Out-of-the-box support for Laravel with zero configuration required, complete with a service provider, facade, and published config.
 
 ## Installation
 
@@ -43,6 +45,61 @@ foreach ($response->toArray() as $item) {
     echo "CPU Load: " . ($item['cpu-load'] ?? 'N/A') . "%\n";
 }
 ```
+
+## Laravel Integration
+
+The package automatically discovers its Laravel service provider and registers itself. You can easily publish the configuration file to customize your connection settings:
+
+```bash
+php artisan vendor:publish --tag="routeros-config"
+```
+
+Once published to `config/routeros.php`, update your `.env` file:
+```env
+ROUTEROS_HOST=192.168.88.1
+ROUTEROS_USERNAME=admin
+ROUTEROS_PASSWORD=secret
+```
+
+You can then utilize the Laravel `RouterOS` Facade anywhere in your application:
+
+```php
+use Bennito254\RouterOS\Laravel\Facade as RouterOS;
+
+$response = RouterOS::query('/ip/address/print');
+```
+
+## Service Facades
+
+The package provides dedicated Service Facades allowing you to rapidly query, add, modify, or toggle states on RouterOS entities (such as IP Addresses, Hotspot Users, and PPP Secrets) without manually constructing queries.
+
+```php
+use Bennito254\RouterOS\Facade\IpAddress;
+use Bennito254\RouterOS\Facade\HotspotUser;
+
+// Using the IpAddress Facade
+$ipFacade = new IpAddress($client);
+
+// Get all IP Addresses
+$addresses = $ipFacade->getAll();
+
+// Add a new IP Address
+$ipFacade->add([
+    'address'   => '10.0.0.1/24',
+    'interface' => 'ether2',
+]);
+
+// Disable a Hotspot user by their RouterOS `.id`
+$hotspotFacade = new HotspotUser($client);
+$hotspotFacade->disable('*1F');
+```
+
+The available built-in Facades under `Bennito254\RouterOS\Facade\` are:
+- `IpAddress` (`/ip/address`)
+- `HotspotUser` (`/ip/hotspot/user`)
+- `HotspotActive` (`/ip/hotspot/active`)
+- `PppSecret` (`/ppp/secret`)
+- `PppActive` (`/ppp/active`)
 
 ## Using the Query Builder
 

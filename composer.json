@@ -17,6 +17,7 @@
         "psr/log": "^3.0"
     },
     "require-dev": {
+        "illuminate/support": "^10.0|^11.0",
         "phpunit/phpunit": "^11.0",
         "phpstan/phpstan": "^1.10",
         "squizlabs/php_codesniffer": "^3.9"
@@ -27,8 +28,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Bennito254",
-            "email": "bennito254@users.noreply.github.com"
+            "name": "Bennito254"
         }
     ],
     "support": {
@@ -51,5 +51,15 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bennito254\\RouterOS\\Laravel\\ServiceProvider"
+            ],
+            "aliases": {
+                "RouterOS": "Bennito254\\RouterOS\\Laravel\\Facade"
+            }
+        }
     }
 }
