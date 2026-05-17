@@ -1,0 +1,32 @@
+/vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
+coverage/
+tests/_output/
+
+# PHPStan & PHP_CodeSniffer
+.phpcs-cache
+.php_cs.cache
+
+# Environment variables
+.env
+.env.local
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
