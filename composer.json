@@ -2,6 +2,16 @@
     "name": "bennito254/routeros-client",
     "description": "A modern, production-grade PHP client for MikroTik RouterOS API.",
     "type": "library",
+    "keywords": [
+        "mikrotik",
+        "routeros",
+        "api",
+        "client",
+        "php",
+        "networking",
+        "sockets",
+        "socks5"
+    ],
     "require": {
         "php": ">=8.2",
         "psr/log": "^3.0"
@@ -11,13 +21,20 @@
         "phpstan/phpstan": "^1.10",
         "squizlabs/php_codesniffer": "^3.9"
     },
+    "suggest": {
+        "monolog/monolog": "Allows for robust logging of API requests, responses, and connection handshakes."
+    },
     "license": "MIT",
     "authors": [
         {
             "name": "Bennito254",
-            "email": "bennito254@example.com"
+            "email": "bennito254@users.noreply.github.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/bennito254/routeros-client/issues",
+        "source": "https://github.com/bennito254/routeros-client"
+    },
     "autoload": {
         "psr-4": {
             "Bennito254\\RouterOS\\": "src/"
@@ -30,9 +47,12 @@
     },
     "scripts": {
         "test": "phpunit tests",
-        "analyze": "phpstan analyse src"
+        "analyze": "phpstan analyse src",
+        "lint": "phpcs src --standard=PSR12",
+        "fix": "phpcbf src --standard=PSR12"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {}
     }
 }
