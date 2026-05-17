@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Facade as IlluminateFacade;
  * @method static void connect()
  * @method static void disconnect()
  * @method static bool isConnected()
- * 
+ *
  * @see \Bennito254\RouterOS\Client\Client
  */
 class Facade extends IlluminateFacade
