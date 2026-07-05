@@ -95,4 +95,55 @@ abstract class AbstractFacade
             ->equal('.id', $id);
         return $this->client->query($query);
     }
+
+    /**
+     * Retrieve items in chunks to avoid memory exhaustion and router CPU spikes.
+     *
+     * @param int $size Number of items per chunk.
+     * @param callable $callback Callback function receiving a ResponseCollection. Return false to stop.
+     * @param array $proplist Optional specific fields to retrieve (to save memory/bandwidth).
+     */
+    public function chunk(int $size, callable $callback, array $proplist = []): void
+    {
+        // 1. Get all IDs to chunk by
+        $query = Query::make($this->getBaseCommand() . '/print')
+            ->equal('.proplist', '.id');
+
+        $idsResponse = $this->client->query($query);
+        $ids = [];
+        foreach ($idsResponse->getSentences() as $sentence) {
+            $id = $sentence->getAttribute('.id');
+            if ($id !== null) {
+                $ids[] = $id;
+            }
+        }
+
+        if (empty($ids)) {
+            return;
+        }
+
+        // 2. Chunk the IDs and query full details for each chunk
+        $chunks = array_chunk($ids, $size);
+        foreach ($chunks as $chunkIds) {
+            $chunkQuery = Query::make($this->getBaseCommand() . '/print');
+            
+            if (!empty($proplist)) {
+                $chunkQuery->equal('.proplist', implode(',', $proplist));
+            }
+
+            // Build query filter: .id=*1 OR .id=*2 OR ...
+            foreach ($chunkIds as $index => $id) {
+                $chunkQuery->where('.id', $id);
+                if ($index > 0) {
+                    $chunkQuery->whereOr();
+                }
+            }
+
+            $response = $this->client->query($chunkQuery);
+            if ($callback($response) === false) {
+                break;
+            }
+        }
+    }
 }
+

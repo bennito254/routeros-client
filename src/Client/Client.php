@@ -50,21 +50,54 @@ class Client implements LoggerAwareInterface
             return;
         }
 
-        $this->logger->info(
-            "Connecting to RouterOS API at {host}:{port}",
-            [
-            'host' => $this->config->host,
-            'port' => $this->config->port,
-            ]
-        );
+        $attempts = 0;
+        $maxAttempts = max(1, $this->config->reconnectAttempts);
 
-        $this->transport = $this->createTransport();
-        $this->transport->connect();
+        while (true) {
+            try {
+                $this->logger->info(
+                    "Connecting to RouterOS API at {host}:{port} (Attempt {attempt}/{max})",
+                    [
+                        'host' => $this->config->host,
+                        'port' => $this->config->port,
+                        'attempt' => $attempts + 1,
+                        'max' => $maxAttempts,
+                    ]
+                );
 
-        $this->encoder = new Encoder();
-        $this->decoder = new Decoder($this->transport);
+                $this->transport = $this->createTransport();
+                $this->transport->connect();
 
-        $this->authenticate();
+                $this->encoder = new Encoder();
+                $this->decoder = new Decoder($this->transport);
+
+                $this->authenticate();
+                break;
+            } catch (ConnectionException $e) {
+                $attempts++;
+                $this->disconnect();
+                
+                if ($attempts >= $maxAttempts) {
+                    $this->logger->error(
+                        "Failed to connect to RouterOS API after {attempts} attempts. Error: {error}",
+                        [
+                            'attempts' => $attempts,
+                            'error' => $e->getMessage()
+                        ]
+                    );
+                    throw $e;
+                }
+
+                $this->logger->warning(
+                    "Connection attempt {attempt} failed, retrying in {delay}ms...",
+                    [
+                        'attempt' => $attempts,
+                        'delay' => $attempts * 250
+                    ]
+                );
+                usleep($attempts * 250000); // 250ms, 500ms, etc.
+            }
+        }
     }
 
     public function disconnect(): void
