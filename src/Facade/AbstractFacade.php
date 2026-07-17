@@ -7,6 +7,7 @@ namespace Bennito254\RouterOS\Facade;
 use Bennito254\RouterOS\Client\Client;
 use Bennito254\RouterOS\Query\Query;
 use Bennito254\RouterOS\Response\ResponseCollection;
+use Bennito254\RouterOS\Response\ResponseSentence;
 
 abstract class AbstractFacade
 {
@@ -28,6 +29,7 @@ abstract class AbstractFacade
     public function getAll(): ResponseCollection
     {
         $query = Query::make($this->getBaseCommand() . '/print');
+
         return $this->client->query($query);
     }
 
@@ -126,7 +128,7 @@ abstract class AbstractFacade
         $chunks = array_chunk($ids, $size);
         foreach ($chunks as $chunkIds) {
             $chunkQuery = Query::make($this->getBaseCommand() . '/print');
-            
+
             if (!empty($proplist)) {
                 $chunkQuery->equal('.proplist', implode(',', $proplist));
             }

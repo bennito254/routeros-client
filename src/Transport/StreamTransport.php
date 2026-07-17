@@ -92,6 +92,10 @@ abstract class StreamTransport implements TransportInterface
 
     public function close(): void
     {
+        if ($this->stream === false) {
+            $this->stream = null;
+        }
+
         if ($this->stream !== null) {
             @fclose($this->stream);
             $this->stream = null;

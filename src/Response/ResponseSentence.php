@@ -10,6 +10,7 @@ class ResponseSentence
     public const TYPE_DONE = '!done';
     public const TYPE_TRAP = '!trap';
     public const TYPE_FATAL = '!fatal';
+    public const TYPE_EMPTY = '!empty';
 
     public function __construct(
         private readonly string $type,

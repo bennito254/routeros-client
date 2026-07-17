@@ -76,7 +76,7 @@ class Client implements LoggerAwareInterface
             } catch (ConnectionException $e) {
                 $attempts++;
                 $this->disconnect();
-                
+
                 if ($attempts >= $maxAttempts) {
                     $this->logger->error(
                         "Failed to connect to RouterOS API after {attempts} attempts. Error: {error}",
@@ -185,11 +185,13 @@ class Client implements LoggerAwareInterface
 
         $this->logger->debug("Sending words:", $words);
         $encoded = $this->encoder->encodeSentence($words);
+
         $this->transport->write($encoded);
     }
 
     private function readResponse(bool $throwOnTrap = true): ResponseCollection
     {
+
         if ($this->decoder === null) {
             throw new ConnectionException("Cannot read data, client is not connected.");
         }
@@ -198,6 +200,7 @@ class Client implements LoggerAwareInterface
 
         while (true) {
             $words = $this->decoder->readSentence();
+
             if (empty($words)) {
                 // Stream closed or empty sentence
                 break;
@@ -206,8 +209,9 @@ class Client implements LoggerAwareInterface
             $this->logger->debug("Received words:", $words);
 
             $sentence = ResponseSentence::parse($words);
-            $collection->add($sentence);
 
+            $collection->add($sentence);
+            
             if ($sentence->isType(ResponseSentence::TYPE_FATAL)) {
                 throw new FatalException("Fatal error from RouterOS: " . $sentence->getAttribute('message', 'Unknown'));
             }
@@ -239,7 +243,8 @@ class Client implements LoggerAwareInterface
                     $fullMessage .= " (Category: {$category})";
                 }
 
-                throw new $exceptionClass($fullMessage, 0, null, $sentence->getAttributes());
+                //throw new $exceptionClass($fullMessage, 0, null, $sentence->getAttributes());
+                throw new $exceptionClass($fullMessage);
             }
         }
     }
